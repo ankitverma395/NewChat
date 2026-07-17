@@ -1,0 +1,71 @@
+import express from 'express';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import connectDB from './config/db.js';
+import sessionRoutes from './routes/sessionRoutes.js';
+import socketHandler from './socket/socketHandler.js';
+import errorHandler from './middlewares/errorHandler.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load Environment Variables
+dotenv.config();
+
+const app = express();
+const httpServer = createServer(app);
+
+// Connect to MongoDB Database
+connectDB();
+
+// CORS Middleware Configuration
+const corsOptions = {
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  methods: ['GET', 'POST'],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
+app.use(express.json());
+
+// Socket.io Setup with CORS
+const io = new Server(httpServer, {
+  cors: corsOptions,
+  pingTimeout: 60000,
+});
+
+// Attach Socket Handlers
+socketHandler(io);
+
+// Mount API Routes
+app.use('/api', sessionRoutes);
+
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/dist')));
+
+  app.get('*', (req, res) => {
+    if (req.path.startsWith('/api')) {
+      return res.status(404).json({ success: false, message: 'API Route Not Found' });
+    }
+    res.sendFile(path.resolve(__dirname, '../client', 'dist', 'index.html'));
+  });
+} else {
+  // Root path handler
+  app.get('/', (req, res) => {
+    res.json({ message: 'Stranger Chat Signaling Server API is running' });
+  });
+}
+
+// Error handling middleware
+app.use(errorHandler);
+
+// Start Server Listening
+const PORT = process.env.PORT || 5000;
+httpServer.listen(PORT, () => {
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+});
