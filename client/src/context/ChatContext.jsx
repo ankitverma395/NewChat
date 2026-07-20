@@ -60,6 +60,11 @@ export const ChatProvider = ({ children }) => {
     return saved !== null ? JSON.parse(saved) : false;
   });
 
+  const [dataSaverMode, setDataSaverMode] = useState(() => {
+    const saved = localStorage.getItem('dataSaverMode');
+    return saved !== null ? JSON.parse(saved) : false;
+  });
+
   const soundsEnabledRef = useRef(soundsEnabled);
   useEffect(() => {
     soundsEnabledRef.current = soundsEnabled;
@@ -71,6 +76,12 @@ export const ChatProvider = ({ children }) => {
     ttsEnabledRef.current = ttsEnabled;
     localStorage.setItem('ttsEnabled', JSON.stringify(ttsEnabled));
   }, [ttsEnabled]);
+
+  const dataSaverModeRef = useRef(dataSaverMode);
+  useEffect(() => {
+    dataSaverModeRef.current = dataSaverMode;
+    localStorage.setItem('dataSaverMode', JSON.stringify(dataSaverMode));
+  }, [dataSaverMode]);
 
   const playSound = useCallback((type) => {
     if (!soundsEnabledRef.current) return;
@@ -122,6 +133,76 @@ export const ChatProvider = ({ children }) => {
         gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
         osc.start(now);
         osc.stop(now + 0.45);
+      } else if (type === 'laser') {
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(1200, now);
+        osc.frequency.exponentialRampToValueAtTime(150, now + 0.2);
+        gain.gain.setValueAtTime(0.04, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+        osc.start(now);
+        osc.stop(now + 0.22);
+      } else if (type === 'coin') {
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(987.77, now); // B5
+        osc.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.setValueAtTime(0.05, now + 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      } else if (type === 'powerup') {
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'triangle';
+        const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
+        notes.forEach((f, idx) => {
+          osc.frequency.setValueAtTime(f, now + idx * 0.07);
+        });
+        gain.gain.setValueAtTime(0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+        osc.start(now);
+        osc.stop(now + 0.35);
+      } else if (type === 'jump') {
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.exponentialRampToValueAtTime(800, now + 0.15);
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+        osc.start(now);
+        osc.stop(now + 0.18);
+      } else if (type === 'gameover') {
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'square';
+        const notes = [400, 350, 300, 220];
+        notes.forEach((f, idx) => {
+          osc.frequency.setValueAtTime(f, now + idx * 0.1);
+        });
+        gain.gain.setValueAtTime(0.04, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+        osc.start(now);
+        osc.stop(now + 0.45);
       }
     } catch (e) {
       console.warn('Audio synthesis failed:', e);
@@ -140,6 +221,13 @@ export const ChatProvider = ({ children }) => {
   const [board, setBoard] = useState(Array(9).fill(null));
   const [gameStatus, setGameStatus] = useState('idle'); // 'idle' | 'invited' | 'receiving_invite' | 'playing' | 'won' | 'lost' | 'draw'
   const [isMyTurn, setIsMyTurn] = useState(false);
+
+  // New Interactive game & overlay features
+  const [activeGameTab, setActiveGameTab] = useState('tictactoe'); // 'tictactoe' | 'wyr' | 'soundboard'
+  const [reactions, setReactions] = useState([]);
+  const [wyrIndex, setWyrIndex] = useState(0);
+  const [myWyrVote, setMyWyrVote] = useState(null); // 'A' | 'B' | null
+  const [partnerWyrVote, setPartnerWyrVote] = useState(null); // 'A' | 'B' | null
 
   // Chat themes state
   const [myTheme, setMyTheme] = useState('blue'); // 'blue' | 'purple' | 'emerald' | 'rose' | 'amber'
@@ -222,6 +310,11 @@ export const ChatProvider = ({ children }) => {
       setBoard(Array(9).fill(null));
       setGameStatus('idle');
       setIsMyTurn(false);
+      setActiveGameTab('tictactoe');
+      setReactions([]);
+      setWyrIndex(0);
+      setMyWyrVote(null);
+      setPartnerWyrVote(null);
       setMyTheme('blue');
       setPartnerTheme('blue');
       setPartnerNickname('Stranger');
@@ -265,6 +358,41 @@ export const ChatProvider = ({ children }) => {
         setBoard(Array(9).fill(null));
         setGameStatus('playing');
         setIsMyTurn(isInitiatorRef.current);
+      } else if (data.type === 'emojiReaction') {
+        if (!dataSaverModeRef.current) {
+          const id = Date.now() + Math.random();
+          setReactions((prev) => {
+            if (prev.length >= 5) return prev;
+            return [
+              ...prev,
+              {
+                id,
+                emoji: data.emoji,
+                style: {
+                  left: `${15 + Math.random() * 70}%`,
+                  fontSize: `${24 + Math.random() * 16}px`,
+                  animationDuration: `${1.5 + Math.random() * 1}s`,
+                }
+              }
+            ];
+          });
+          setTimeout(() => {
+            setReactions((prev) => prev.filter((r) => r.id !== id));
+          }, 3000);
+        }
+      } else if (data.type === 'sfxTrigger') {
+        playSound(data.sfxType);
+      } else if (data.type === 'wyrChangeGame') {
+        setActiveGameTab(data.gameTab);
+        setWyrIndex(data.wyrIndex || 0);
+        setMyWyrVote(null);
+        setPartnerWyrVote(null);
+      } else if (data.type === 'wyrVote') {
+        setPartnerWyrVote(data.vote);
+      } else if (data.type === 'wyrNext') {
+        setWyrIndex(data.wyrIndex);
+        setMyWyrVote(null);
+        setPartnerWyrVote(null);
       }
     });
 
@@ -345,6 +473,11 @@ export const ChatProvider = ({ children }) => {
     setBoard(Array(9).fill(null));
     setGameStatus('idle');
     setIsMyTurn(false);
+    setActiveGameTab('tictactoe');
+    setReactions([]);
+    setWyrIndex(0);
+    setMyWyrVote(null);
+    setPartnerWyrVote(null);
     setMyTheme('blue');
     setPartnerTheme('blue');
     setPartnerNickname('Stranger');
@@ -367,6 +500,11 @@ export const ChatProvider = ({ children }) => {
     setBoard(Array(9).fill(null));
     setGameStatus('idle');
     setIsMyTurn(false);
+    setActiveGameTab('tictactoe');
+    setReactions([]);
+    setWyrIndex(0);
+    setMyWyrVote(null);
+    setPartnerWyrVote(null);
     setMyTheme('blue');
     setPartnerTheme('blue');
     setPartnerNickname('Stranger');
@@ -460,6 +598,65 @@ export const ChatProvider = ({ children }) => {
     }
   }, [roomId]);
 
+  const triggerReaction = useCallback((emoji, isLocal = true) => {
+    if (!dataSaverModeRef.current) {
+      const id = Date.now() + Math.random();
+      setReactions((prev) => {
+        if (prev.length >= 5) return prev;
+        return [
+          ...prev,
+          {
+            id,
+            emoji,
+            style: {
+              left: `${15 + Math.random() * 70}%`,
+              fontSize: `${24 + Math.random() * 16}px`,
+              animationDuration: `${1.5 + Math.random() * 1}s`,
+            }
+          }
+        ];
+      });
+      
+      setTimeout(() => {
+        setReactions((prev) => prev.filter((r) => r.id !== id));
+      }, 3000);
+    }
+
+    if (isLocal && socketRef.current && roomId) {
+      socketRef.current.emit('gameAction', { type: 'emojiReaction', emoji });
+    }
+  }, [roomId]);
+
+  const changeGameTab = useCallback((tab) => {
+    setActiveGameTab(tab);
+    if (socketRef.current && roomId) {
+      socketRef.current.emit('gameAction', { type: 'wyrChangeGame', gameTab: tab, wyrIndex });
+    }
+  }, [roomId, wyrIndex]);
+
+  const voteWyr = useCallback((voteOption) => {
+    setMyWyrVote(voteOption);
+    if (socketRef.current && roomId) {
+      socketRef.current.emit('gameAction', { type: 'wyrVote', vote: voteOption });
+    }
+  }, [roomId]);
+
+  const nextWyrQuestion = useCallback((nextIdx) => {
+    setWyrIndex(nextIdx);
+    setMyWyrVote(null);
+    setPartnerWyrVote(null);
+    if (socketRef.current && roomId) {
+      socketRef.current.emit('gameAction', { type: 'wyrNext', wyrIndex: nextIdx });
+    }
+  }, [roomId]);
+
+  const playSfxShared = useCallback((sfxType) => {
+    playSound(sfxType);
+    if (socketRef.current && roomId) {
+      socketRef.current.emit('gameAction', { type: 'sfxTrigger', sfxType });
+    }
+  }, [roomId, playSound]);
+
   return (
     <ChatContext.Provider
       value={{
@@ -494,6 +691,18 @@ export const ChatProvider = ({ children }) => {
         declineGameInvite,
         makeGameMove,
         resetGame,
+        // Reaction, Soundboard & Would You Rather exports
+        reactions,
+        triggerReaction,
+        activeGameTab,
+        setActiveGameTab,
+        changeGameTab,
+        wyrIndex,
+        myWyrVote,
+        partnerWyrVote,
+        voteWyr,
+        nextWyrQuestion,
+        playSfxShared,
         // Theme states & triggers
         myTheme,
         partnerTheme,
@@ -507,6 +716,8 @@ export const ChatProvider = ({ children }) => {
         setSoundsEnabled,
         ttsEnabled,
         setTtsEnabled,
+        dataSaverMode,
+        setDataSaverMode,
       }}
     >
       {children}

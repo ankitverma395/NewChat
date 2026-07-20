@@ -9,12 +9,13 @@ import socketHandler from './socket/socketHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Load Environment Variables
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 const httpServer = createServer(app);
@@ -44,20 +45,24 @@ socketHandler(io);
 // Mount API Routes
 app.use('/api', sessionRoutes);
 
-// Serve static assets in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/dist')));
+// Serve static assets in production or if client build exists
+const clientDistPath = path.join(__dirname, '../client/dist');
+const indexHtmlExists = fs.existsSync(path.join(clientDistPath, 'index.html'));
+
+if (process.env.NODE_ENV === 'production' || indexHtmlExists) {
+  console.log('Serving production client assets from:', clientDistPath);
+  app.use(express.static(clientDistPath));
 
   app.get('*', (req, res) => {
     if (req.path.startsWith('/api')) {
       return res.status(404).json({ success: false, message: 'API Route Not Found' });
     }
-    res.sendFile(path.resolve(__dirname, '../client', 'dist', 'index.html'));
+    res.sendFile(path.resolve(clientDistPath, 'index.html'));
   });
 } else {
   // Root path handler
   app.get('/', (req, res) => {
-    res.json({ message: 'Stranger Chat Signaling Server API is running' });
+    res.json({ message: 'Stranger Chat Signaling Server API is running (Development Mode)' });
   });
 }
 

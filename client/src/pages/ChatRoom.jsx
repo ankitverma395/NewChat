@@ -27,6 +27,7 @@ export default function ChatRoom() {
     partnerInterests,
     commonInterests,
     partnerNickname,
+    dataSaverMode,
   } = useChat();
 
   const [isChatOpen, setIsChatOpen] = useState(true);
@@ -44,7 +45,7 @@ export default function ChatRoom() {
     toggleVideo,
     toggleAudio,
     toggleScreenShare,
-  } = useWebRTC(socket, roomId, partnerSocketId, isInitiator, setError, chatMode === 'video');
+  } = useWebRTC(socket, roomId, partnerSocketId, isInitiator, setError, chatMode === 'video', dataSaverMode);
 
   // Handle Snapshot Capture from live video elements
   const handleTakeSnapshot = () => {
@@ -134,9 +135,9 @@ export default function ChatRoom() {
     }
   };
 
-  // Auto-reconnect flow when stranger disconnects
+  // Auto-reconnect flow when stranger disconnects (disabled in dataSaverMode to conserve resources)
   useEffect(() => {
-    if (matchState === 'disconnected') {
+    if (matchState === 'disconnected' && !dataSaverMode) {
       const timer = setTimeout(() => {
         console.log('Stranger left. Automatically re-entering queue...');
         joinChatQueue();
@@ -144,7 +145,7 @@ export default function ChatRoom() {
 
       return () => clearTimeout(timer);
     }
-  }, [matchState, joinChatQueue]);
+  }, [matchState, joinChatQueue, dataSaverMode]);
 
   // Handle browser HTML5 Fullscreen API
   const handleToggleFullscreen = () => {
@@ -178,15 +179,15 @@ export default function ChatRoom() {
   }, []);
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 py-2 sm:py-6">
+    <div className="flex-1 flex flex-col min-h-0 py-2 md:py-3 select-none">
       {/* Error alert drawer */}
       {error && (
-        <div className="mb-4 bg-red-50 border border-red-100 text-red-800 rounded-2xl p-4 flex items-center gap-3 text-sm font-semibold shadow-inner-soft">
-          <AlertTriangle className="w-5 h-5 text-red-600 shrink-0" />
-          <p className="flex-1">{error}</p>
+        <div className="mb-3 bg-red-500/10 border border-red-500/20 text-red-200 rounded-2xl p-4 flex items-center gap-3 text-sm font-semibold shadow-2xl">
+          <AlertTriangle className="w-5 h-5 text-red-500 shrink-0" />
+          <p className="flex-1 text-xs sm:text-sm">{error}</p>
           <button
             onClick={() => setError(null)}
-            className="text-xs px-2.5 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg transition"
+            className="text-xs px-3 py-1.5 bg-red-500/20 hover:bg-red-500/35 text-red-200 rounded-lg transition"
           >
             Dismiss
           </button>
@@ -194,7 +195,7 @@ export default function ChatRoom() {
       )}
 
       {/* Main split chat zone */}
-      <div className="flex-1 flex flex-col lg:grid lg:grid-cols-12 gap-4 lg:gap-6 min-h-0 mb-4 sm:mb-6">
+      <div className="flex-1 flex flex-col md:grid md:grid-cols-12 gap-4 md:gap-5 min-h-0 mb-3 md:mb-4">
         
         {/* Video Player component */}
         <VideoPlayer
@@ -215,7 +216,7 @@ export default function ChatRoom() {
 
         {/* Text chat panel column */}
         {isChatOpen && (
-          <div className="flex-1 lg:col-span-4 h-full min-h-0 flex flex-col mt-2 lg:mt-0">
+          <div className="flex-1 md:col-span-4 h-full min-h-0 flex flex-col mt-2.5 md:mt-0">
             <ChatBox
               messages={messages}
               onSendMessage={sendMessage}

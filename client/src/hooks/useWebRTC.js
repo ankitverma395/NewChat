@@ -8,7 +8,7 @@ const ICE_SERVERS = {
   ],
 };
 
-export const useWebRTC = (socket, roomId, partnerSocketId, isInitiator, onError, enabled = true) => {
+export const useWebRTC = (socket, roomId, partnerSocketId, isInitiator, onError, enabled = true, dataSaverMode = false) => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
@@ -32,13 +32,20 @@ export const useWebRTC = (socket, roomId, partnerSocketId, isInitiator, onError,
         return localStreamRef.current;
       }
 
-      console.log('Requesting local media devices...');
+      console.log('Requesting local media devices with dataSaverMode:', dataSaverMode);
+      const videoConstraints = dataSaverMode ? {
+        width: { ideal: 320, max: 480 },
+        height: { ideal: 240, max: 360 },
+        frameRate: { ideal: 12, max: 15 },
+        facingMode: 'user',
+      } : {
+        width: { ideal: 640 },
+        height: { ideal: 480 },
+        facingMode: 'user',
+      };
+
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          width: { ideal: 640 },
-          height: { ideal: 480 },
-          facingMode: 'user',
-        },
+        video: videoConstraints,
         audio: true,
       });
 
@@ -56,7 +63,7 @@ export const useWebRTC = (socket, roomId, partnerSocketId, isInitiator, onError,
       }
       throw err;
     }
-  }, [onError]);
+  }, [onError, dataSaverMode]);
 
   // Clean up WebRTC peer connection and streams
   const cleanup = useCallback(() => {
@@ -252,6 +259,25 @@ export const useWebRTC = (socket, roomId, partnerSocketId, isInitiator, onError,
                   quality: rtt < 120 ? 'excellent' : rtt < 220 ? 'good' : rtt < 400 ? 'fair' : 'poor'
                 });
               }
+
+              // Apply max bitrate parameters dynamically to save mobile data & CPU/RAM
+              try {
+                const senders = pc.getSenders();
+                senders.forEach(sender => {
+                  if (sender.track && sender.track.kind === 'video') {
+                    const parameters = sender.getParameters();
+                    if (parameters && parameters.encodings && parameters.encodings.length > 0) {
+                      const targetBitrate = dataSaverMode ? 150000 : 500000; // 150kbps vs 500kbps
+                      if (parameters.encodings[0].maxBitrate !== targetBitrate) {
+                        parameters.encodings[0].maxBitrate = targetBitrate;
+                        sender.setParameters(parameters).catch(() => {});
+                      }
+                    }
+                  }
+                });
+              } catch (bitrateErr) {
+                console.warn('Failed to set bitrate dynamically:', bitrateErr);
+              }
             } catch (err) {
               console.warn('Error reading stats:', err);
             }
@@ -306,7 +332,48 @@ export const useWebRTC = (socket, roomId, partnerSocketId, isInitiator, onError,
       socket.off('iceCandidate', handleRemoteCandidate);
       cleanup();
     };
-  }, [socket, roomId, partnerSocketId, isInitiator, initLocalStream, cleanup, onError]);
+  }, [socket, roomId, partnerSocketId, isInitiator, initLocalStream, cleanup, onError, dataSaverMode]);
+
+  // Dynamically update camera constraints and peer connection bitrate on dataSaverMode change mid-call
+  useEffect(() => {
+    if (localStreamRef.current) {
+      const videoTrack = localStreamRef.current.getVideoTracks()[0];
+      if (videoTrack) {
+        const videoConstraints = dataSaverMode ? {
+          width: { ideal: 320, max: 480 },
+          height: { ideal: 240, max: 360 },
+          frameRate: { ideal: 12, max: 15 },
+        } : {
+          width: { ideal: 640 },
+          height: { ideal: 480 },
+          frameRate: { ideal: 30 },
+        };
+        videoTrack.applyConstraints(videoConstraints)
+          .then(() => console.log('Successfully applied video constraints dynamically for dataSaverMode:', dataSaverMode))
+          .catch(err => console.warn('Failed to apply dynamic video constraints:', err));
+      }
+    }
+
+    if (pcRef.current) {
+      try {
+        const senders = pcRef.current.getSenders();
+        senders.forEach(sender => {
+          if (sender.track && sender.track.kind === 'video') {
+            const parameters = sender.getParameters();
+            if (parameters && parameters.encodings && parameters.encodings.length > 0) {
+              const targetBitrate = dataSaverMode ? 150000 : 500000;
+              parameters.encodings[0].maxBitrate = targetBitrate;
+              sender.setParameters(parameters)
+                .then(() => console.log(`Bitrate dynamically set to ${dataSaverMode ? 150 : 500} kbps`))
+                .catch(() => {});
+            }
+          }
+        });
+      } catch (err) {
+        console.warn('Failed to apply dynamic bitrate parameters:', err);
+      }
+    }
+  }, [dataSaverMode]);
 
   // Media Controls: Toggle Video
   const toggleVideo = useCallback(() => {

@@ -1,19 +1,19 @@
 import React from 'react';
 
 const ME_THEMES = {
-  blue: 'bg-brand-600 text-white rounded-tr-none shadow-brand-100/20',
-  purple: 'bg-indigo-600 text-white rounded-tr-none shadow-indigo-100/20',
-  emerald: 'bg-emerald-600 text-white rounded-tr-none shadow-emerald-100/20',
-  rose: 'bg-rose-500 text-white rounded-tr-none shadow-rose-100/20',
-  amber: 'bg-amber-500 text-white rounded-tr-none shadow-amber-100/20',
+  blue: 'bg-brand-600 text-white rounded-tr-none shadow-lg shadow-brand-500/10',
+  purple: 'bg-indigo-650 text-white rounded-tr-none shadow-lg shadow-indigo-500/10',
+  emerald: 'bg-emerald-650 text-white rounded-tr-none shadow-lg shadow-emerald-500/10',
+  rose: 'bg-rose-600 text-white rounded-tr-none shadow-lg shadow-rose-500/10',
+  amber: 'bg-amber-650 text-white rounded-tr-none shadow-lg shadow-amber-500/10',
 };
 
 const PARTNER_THEMES = {
-  blue: 'bg-slate-100 text-slate-800 rounded-tl-none border border-slate-200/50',
-  purple: 'bg-indigo-50/40 text-indigo-950 rounded-tl-none border border-indigo-100/70',
-  emerald: 'bg-emerald-50/40 text-emerald-950 rounded-tl-none border border-emerald-100/70',
-  rose: 'bg-rose-50/40 text-rose-950 rounded-tl-none border border-rose-100/70',
-  amber: 'bg-amber-50/30 text-amber-950 rounded-tl-none border border-amber-100/70',
+  blue: 'bg-slate-900 border border-slate-800 text-slate-100 rounded-tl-none',
+  purple: 'bg-indigo-950/40 border border-indigo-900/30 text-indigo-200 rounded-tl-none',
+  emerald: 'bg-emerald-950/40 border border-emerald-900/30 text-emerald-200 rounded-tl-none',
+  rose: 'bg-rose-950/40 border border-rose-900/30 text-rose-200 rounded-tl-none',
+  amber: 'bg-amber-950/30 border border-amber-900/30 text-amber-200 rounded-tl-none',
 };
 
 export default function MessageBubble({ message, translatedText, theme = 'blue', senderName = 'Stranger' }) {
