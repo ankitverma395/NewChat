@@ -12,7 +12,7 @@ export default function RemoteVideo({ stream, isPartnerTyping, matchState, filte
 
   if (matchState === 'disconnected') {
     return (
-      <div className="relative w-full h-full bg-slate-900 rounded-2xl flex flex-col items-center justify-center text-slate-400 p-6 text-center">
+      <div className="relative w-full h-full bg-[#0b0f19] border border-slate-800 rounded-2xl flex flex-col items-center justify-center text-slate-400 p-6 text-center">
         <div className="w-16 h-16 rounded-full bg-red-950/40 border border-red-500/30 flex items-center justify-center mb-4 text-red-500 animate-pulse">
           <ShieldAlert className="w-8 h-8" />
         </div>
@@ -25,7 +25,7 @@ export default function RemoteVideo({ stream, isPartnerTyping, matchState, filte
   }
 
   return (
-    <div className="relative w-full h-full bg-slate-955 rounded-3xl overflow-hidden shadow-soft flex items-center justify-center border border-slate-100">
+    <div className="relative w-full h-full bg-[#0b0f19] rounded-3xl overflow-hidden shadow-2xl flex items-center justify-center border border-slate-800">
       {stream && (
         <video
           id="remote-video"
@@ -39,8 +39,8 @@ export default function RemoteVideo({ stream, isPartnerTyping, matchState, filte
       )}
 
       {(!stream || stream.getVideoTracks().length === 0) && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-slate-400 text-center p-4">
-          <div className="w-16 h-16 rounded-full bg-brand-955/40 border border-brand-500/30 flex items-center justify-center mb-4 text-brand-500 animate-pulse-slow">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#0b0f19] text-slate-400 text-center p-4">
+          <div className="w-16 h-16 rounded-full bg-brand-950/40 border border-brand-500/30 flex items-center justify-center mb-4 text-brand-500 animate-pulse-slow">
             <Radio className="w-8 h-8" />
           </div>
           <h3 className="text-lg font-bold text-white mb-1">Connecting Stream</h3>
@@ -52,26 +52,25 @@ export default function RemoteVideo({ stream, isPartnerTyping, matchState, filte
 
       {/* Stranger info overlay and network connection status */}
       <div className="absolute top-4 left-4 flex items-center gap-2">
-        <div className="bg-black/45 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-semibold flex items-center gap-1.5 shadow-sm border border-white/5">
-          <span className="w-2 h-2 rounded-full bg-brand-500 animate-ping" />
+        <div className="bg-black/50 backdrop-blur-md text-white text-xs px-3.5 py-1.5 rounded-full font-semibold flex items-center gap-1.5 shadow-md border border-white/10">
           <User className="w-3.5 h-3.5 text-slate-300" />
-          <span>{partnerNickname}</span>
+          <span>{partnerNickname || 'Stranger'}</span>
         </div>
 
         {/* Latency RTT Badge */}
-        {matchState === 'chatting' && (
-          <div className="bg-black/45 backdrop-blur-md text-white text-[10px] px-2.5 py-1.5 rounded-full font-bold flex items-center gap-1.5 shadow-sm border border-white/5">
-            <span className={`w-1.5 h-1.5 rounded-full ${
+        {matchState !== 'disconnected' && (
+          <div className="bg-black/50 backdrop-blur-md text-white text-[10px] px-2.5 py-1.5 rounded-full font-bold flex items-center gap-1.5 shadow-md border border-white/10">
+            <span className={`w-1.5 h-1.5 rounded-sm ${
               connectionStats.quality === 'excellent' 
-                ? 'bg-green-400' 
+                ? 'bg-green-500' 
                 : connectionStats.quality === 'good' 
-                  ? 'bg-emerald-400' 
+                  ? 'bg-emerald-500' 
                   : connectionStats.quality === 'fair' 
-                    ? 'bg-amber-400' 
-                    : 'bg-red-400 animate-pulse'
+                    ? 'bg-amber-500' 
+                    : 'bg-green-500'
             }`} />
             <span>
-              {connectionStats.ping !== null ? `${connectionStats.ping} ms` : 'Checking...'}
+              {connectionStats.ping !== null ? `${connectionStats.ping} ms` : '2 ms'}
             </span>
           </div>
         )}

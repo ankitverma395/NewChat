@@ -31,7 +31,7 @@ export default function ControlBar({
   onTakeSnapshot,
 }) {
   return (
-    <div className="w-full bg-white border border-slate-100 shadow-premium rounded-2xl px-3 sm:px-6 py-2.5 sm:py-4 flex items-center justify-between gap-2 sm:gap-4">
+    <div className="w-full bg-[#0f1322]/60 border border-slate-850 shadow-2xl backdrop-blur-2xl rounded-3xl px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2 sm:gap-4 z-10">
       {/* Media Controls */}
       {chatMode === 'video' ? (
         <div className="flex items-center space-x-1.5 sm:space-x-2.5">
@@ -39,67 +39,67 @@ export default function ControlBar({
           <button
             onClick={toggleAudio}
             title={isAudioEnabled ? 'Mute Microphone' : 'Unmute Microphone'}
-            className={`p-2 sm:p-3 rounded-xl transition duration-150 ${
+            className={`p-2.5 sm:p-3.5 rounded-2xl border transition-all duration-200 active:scale-95 ${
               isAudioEnabled
-                ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                : 'bg-red-50 text-red-600 hover:bg-red-100'
+                ? 'bg-[#0b0f19]/80 border-slate-800 text-slate-350 hover:bg-slate-850 hover:text-white'
+                : 'bg-red-500/10 border-red-500/25 text-red-400 hover:bg-red-500/20'
             }`}
           >
-            {isAudioEnabled ? <Mic className="w-4 h-4 sm:w-5 sm:h-5" /> : <MicOff className="w-4 h-4 sm:w-5 sm:h-5" />}
+            {isAudioEnabled ? <Mic className="w-4.5 h-4.5 sm:w-5 sm:h-5" /> : <MicOff className="w-4.5 h-4.5 sm:w-5 sm:h-5" />}
           </button>
 
           {/* Toggle Video */}
           <button
             onClick={toggleVideo}
             title={isVideoEnabled ? 'Turn Off Camera' : 'Turn On Camera'}
-            className={`p-2 sm:p-3 rounded-xl transition duration-150 ${
+            className={`p-2.5 sm:p-3.5 rounded-2xl border transition-all duration-200 active:scale-95 ${
               isVideoEnabled
-                ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                : 'bg-red-50 text-red-600 hover:bg-red-100'
+                ? 'bg-[#0b0f19]/80 border-slate-800 text-slate-350 hover:bg-slate-850 hover:text-white'
+                : 'bg-red-500/10 border-red-500/25 text-red-400 hover:bg-red-500/20'
             }`}
           >
-            {isVideoEnabled ? <Video className="w-4 h-4 sm:w-5 sm:h-5" /> : <VideoOff className="w-4 h-4 sm:w-5 sm:h-5" />}
+            {isVideoEnabled ? <Video className="w-4.5 h-4.5 sm:w-5 sm:h-5" /> : <VideoOff className="w-4.5 h-4.5 sm:w-5 sm:h-5" />}
           </button>
 
           {/* Screen Share */}
           <button
             onClick={toggleScreenShare}
             title={isScreenSharing ? 'Stop Screen Share' : 'Share Screen'}
-            className={`p-2 sm:p-3 rounded-xl transition duration-150 ${
+            className={`p-2.5 sm:p-3.5 rounded-2xl border transition-all duration-200 active:scale-95 ${
               isScreenSharing
-                ? 'bg-brand-100 text-brand-700 hover:bg-brand-200'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                ? 'bg-blue-500/20 border-blue-500/30 text-blue-400 hover:bg-blue-500/30 shadow-[0_0_12px_rgba(59,130,246,0.2)]'
+                : 'bg-[#0b0f19]/80 border-slate-800 text-slate-350 hover:bg-slate-850 hover:text-white'
             }`}
           >
-            <Monitor className="w-4 h-4 sm:w-5 sm:h-5" />
+            <Monitor className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
           </button>
         </div>
       ) : (
-        <div className="flex items-center text-slate-400 text-[10px] sm:text-xs font-bold bg-slate-50 px-3 py-2 rounded-xl border border-slate-100/50">
+        <div className="flex items-center text-slate-400 text-[10px] sm:text-xs font-semibold bg-[#070b16]/60 border border-slate-850 px-3 py-2.5 rounded-2xl">
           🎙️ Media disabled (Text Mode)
         </div>
       )}
 
       {/* Navigation Controls */}
-      <div className="flex items-center space-x-1.5 sm:space-x-3">
+      <div className="flex items-center space-x-2 sm:space-x-3.5">
         {/* Next Stranger */}
         <button
           onClick={onNext}
           title="Match with Next Stranger"
-          className="flex items-center space-x-1 sm:space-x-2 px-3 sm:px-5 py-2 sm:py-3 bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white font-bold text-xs sm:text-sm rounded-xl transition duration-150 shadow-md shadow-brand-100 hover:shadow-lg"
+          className="flex items-center space-x-1.5 sm:space-x-2.5 px-4 sm:px-7 py-3 sm:py-3.5 bg-gradient-to-r from-blue-600 to-indigo-650 hover:from-blue-500 hover:to-indigo-550 active:scale-[0.97] text-white font-extrabold text-xs sm:text-sm rounded-2xl transition duration-150 shadow-lg shadow-blue-500/15 hover:shadow-blue-500/25"
         >
           <span className="hidden sm:inline">Next Stranger</span>
           <span className="sm:hidden">Next</span>
-          <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          <ArrowRight className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
         </button>
 
         {/* Leave Room */}
         <button
           onClick={onLeave}
           title="Leave Chat Room"
-          className="flex items-center space-x-1 sm:space-x-1.5 px-3 sm:px-4 py-2 sm:py-3 bg-slate-100 hover:bg-red-50 hover:text-red-600 text-slate-600 font-semibold text-xs sm:text-sm rounded-xl transition duration-150"
+          className="flex items-center space-x-1 sm:space-x-1.5 px-3.5 sm:px-5 py-3 sm:py-3.5 bg-[#0b0f19]/80 hover:bg-red-500/10 hover:text-red-400 text-slate-400 hover:border-red-500/25 border border-slate-800 font-bold text-xs sm:text-sm rounded-2xl transition duration-150 active:scale-[0.97]"
         >
-          <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          <LogOut className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
           <span className="hidden sm:inline">Leave</span>
         </button>
       </div>
@@ -111,9 +111,9 @@ export default function ControlBar({
           <button
             onClick={onTakeSnapshot}
             title="Take Video Snapshot"
-            className="p-2 sm:p-3 rounded-xl transition duration-155 bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-brand-600 active:scale-95"
+            className="p-2.5 sm:p-3.5 rounded-2xl border border-slate-800 bg-[#0b0f19]/80 text-slate-350 hover:bg-slate-850 hover:text-blue-400 active:scale-95 transition"
           >
-            <Camera className="w-4 h-4 sm:w-5 sm:h-5" />
+            <Camera className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
           </button>
         )}
 
@@ -121,22 +121,22 @@ export default function ControlBar({
         <button
           onClick={toggleFullscreen}
           title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-          className={`p-2 sm:p-3 rounded-xl transition duration-150 bg-slate-100 text-slate-700 hover:bg-slate-200`}
+          className="p-2.5 sm:p-3.5 rounded-2xl border border-slate-850 bg-[#0b0f19]/80 text-slate-350 hover:bg-slate-850 hover:text-white active:scale-95 transition"
         >
-          {isFullscreen ? <Minimize2 className="w-4 h-4 sm:w-5 sm:h-5" /> : <Maximize2 className="w-4 h-4 sm:w-5 sm:h-5" />}
+          {isFullscreen ? <Minimize2 className="w-4.5 h-4.5 sm:w-5 sm:h-5" /> : <Maximize2 className="w-4.5 h-4.5 sm:w-5 sm:h-5" />}
         </button>
 
         {/* Chat Toggle */}
         <button
           onClick={toggleChat}
           title={isChatOpen ? 'Hide Chat Panel' : 'Show Chat Panel'}
-          className={`p-2 sm:p-3 rounded-xl transition duration-150 ${
+          className={`p-2.5 sm:p-3.5 rounded-2xl border transition-all duration-200 active:scale-95 ${
             isChatOpen
-              ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-              : 'bg-slate-50 text-slate-400 border border-slate-100 hover:bg-slate-100'
+              ? 'bg-[#0b0f19]/80 border-slate-800 text-slate-350 hover:bg-slate-850 hover:text-white'
+              : 'bg-[#070b16]/60 border-slate-850 text-slate-500 hover:bg-[#0b0f19] hover:text-slate-350'
           }`}
         >
-          {isChatOpen ? <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" /> : <MessageSquareOff className="w-4 h-4 sm:w-5 sm:h-5" />}
+          {isChatOpen ? <MessageSquare className="w-4.5 h-4.5 sm:w-5 sm:h-5" /> : <MessageSquareOff className="w-4.5 h-4.5 sm:w-5 sm:h-5" />}
         </button>
       </div>
     </div>

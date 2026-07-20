@@ -11,16 +11,26 @@
 /* Custom scrollbars for chat box */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #1e293b;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #334155;
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Keyframes for loading spinner/dots */
@@ -37,4 +47,48 @@
 
 .animate-pulse-slow {
   animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Floating Emoji animation */
+@keyframes floatUp {
+  0% {
+    bottom: -10%;
+    transform: translateX(0) scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+    transform: translateX(15px) scale(1);
+  }
+  40% {
+    transform: translateX(-15px) scale(1.1);
+  }
+  60% {
+    transform: translateX(15px) scale(1);
+  }
+  80% {
+    opacity: 1;
+    transform: translateX(-10px) scale(1.2);
+  }
+  100% {
+    bottom: 110%;
+    transform: translateX(0) scale(1.4);
+    opacity: 0;
+  }
+}
+
+.animate-float-emoji {
+  position: absolute;
+  animation: floatUp 2s ease-in-out forwards;
+}
+
+/* Waving Hand animation */
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  10%, 30%, 50%, 70%, 90% { transform: rotate(14deg); }
+  20%, 40%, 60%, 80% { transform: rotate(-8deg); }
+}
+
+.animate-wave {
+  animation: wave 2.5s ease-in-out infinite;
 }
