@@ -8,12 +8,13 @@ const ICE_SERVERS = {
   ],
 };
 
-export const useWebRTC = (socket, roomId, partnerSocketId, isInitiator, onError) => {
+export const useWebRTC = (socket, roomId, partnerSocketId, isInitiator, onError, enabled = true) => {
   const [localStream, setLocalStream] = useState(null);
   const [remoteStream, setRemoteStream] = useState(null);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
   const [isAudioEnabled, setIsAudioEnabled] = useState(true);
   const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [connectionStats, setConnectionStats] = useState({ ping: null, quality: 'checking' });
 
   const pcRef = useRef(null);
   const localStreamRef = useRef(null);
@@ -22,6 +23,7 @@ export const useWebRTC = (socket, roomId, partnerSocketId, isInitiator, onError)
   const pendingOfferRef = useRef(null);
   const pendingAnswerRef = useRef(null);
   const remoteDescriptionSetRef = useRef(false);
+  const statsIntervalRef = useRef(null);
 
   // Initialize Media Devices (Camera and Mic)
   const initLocalStream = useCallback(async () => {
@@ -80,7 +82,13 @@ export const useWebRTC = (socket, roomId, partnerSocketId, isInitiator, onError)
       pcRef.current = null;
     }
 
+    if (statsIntervalRef.current) {
+      clearInterval(statsIntervalRef.current);
+      statsIntervalRef.current = null;
+    }
+
     setRemoteStream(null);
+    setConnectionStats({ ping: null, quality: 'checking' });
     pendingCandidatesRef.current = [];
     pendingOfferRef.current = null;
     pendingAnswerRef.current = null;
@@ -89,7 +97,7 @@ export const useWebRTC = (socket, roomId, partnerSocketId, isInitiator, onError)
 
   // Set up PeerConnection
   useEffect(() => {
-    if (!socket || !roomId || !partnerSocketId) {
+    if (!socket || !roomId || !partnerSocketId || !enabled) {
       return;
     }
 
@@ -222,6 +230,36 @@ export const useWebRTC = (socket, roomId, partnerSocketId, isInitiator, onError)
           }
         };
 
+        // Query WebRTC stats periodically for latency/ping calculation
+        if (statsIntervalRef.current) {
+          clearInterval(statsIntervalRef.current);
+        }
+        statsIntervalRef.current = setInterval(async () => {
+          if (pc && pc.connectionState === 'connected') {
+            try {
+              const stats = await pc.getStats();
+              let rtt = null;
+              stats.forEach((report) => {
+                if (report.type === 'candidate-pair' && report.state === 'succeeded') {
+                  if (report.currentRoundTripTime !== undefined) {
+                    rtt = Math.round(report.currentRoundTripTime * 1000);
+                  }
+                }
+              });
+              if (rtt !== null) {
+                setConnectionStats({
+                  ping: rtt,
+                  quality: rtt < 120 ? 'excellent' : rtt < 220 ? 'good' : rtt < 400 ? 'fair' : 'poor'
+                });
+              }
+            } catch (err) {
+              console.warn('Error reading stats:', err);
+            }
+          } else {
+            setConnectionStats({ ping: null, quality: 'checking' });
+          }
+        }, 3000);
+
         // Process any buffered offer/answer that arrived during initialization
         if (pendingOfferRef.current) {
           console.log('Processing buffered offer...');
@@ -351,6 +389,7 @@ export const useWebRTC = (socket, roomId, partnerSocketId, isInitiator, onError)
     isVideoEnabled,
     isAudioEnabled,
     isScreenSharing,
+    connectionStats,
     toggleVideo,
     toggleAudio,
     toggleScreenShare,

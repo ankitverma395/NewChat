@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { VideoOff, User } from 'lucide-react';
 
-export default function LocalVideo({ stream, isVideoEnabled }) {
+export default function LocalVideo({ stream, isVideoEnabled, filterClass }) {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -14,11 +14,12 @@ export default function LocalVideo({ stream, isVideoEnabled }) {
     <div className="relative w-full h-full bg-slate-900 rounded-2xl overflow-hidden shadow-premium border border-white/20 aspect-video sm:aspect-auto">
       {isVideoEnabled && stream ? (
         <video
+          id="local-video"
           ref={videoRef}
           autoPlay
           playsInline
           muted // Must be muted locally!
-          className="w-full h-full object-cover mirror-mode"
+          className={`w-full h-full object-cover mirror-mode ${filterClass || ''}`}
           style={{ transform: 'scaleX(-1)' }} // Mirror local view for natural feel
         />
       ) : (

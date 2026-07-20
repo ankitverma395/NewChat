@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
-import { UserMinus, Sparkles } from 'lucide-react';
+import React from 'react';
+import { UserMinus, Sparkles, Hash } from 'lucide-react';
 import { useChat } from '../context/ChatContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 export default function WaitingScreen() {
-  const { leaveChat, joinChatQueue } = useChat();
+  const { leaveChat, chatMode, interests } = useChat();
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center py-12 sm:py-20">
@@ -19,9 +19,32 @@ export default function WaitingScreen() {
         </div>
 
         {/* Text descriptions */}
-        <h2 className="text-2xl font-bold text-slate-900 mb-2">Searching for a stranger...</h2>
-        <p className="text-sm font-medium text-slate-400 mb-8 max-w-xs mx-auto">
-          Finding someone online. This should take just a moment.
+        <h2 className="text-2xl font-bold text-slate-900 mb-1">Searching for a stranger...</h2>
+        
+        {/* Active search filters */}
+        <div className="mb-6 mt-3">
+          <span className="inline-block text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-600 mb-2 capitalize">
+            {chatMode === 'video' ? '📽️ Video Mode' : '💬 Text Mode'}
+          </span>
+          {interests.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-1 mt-1 max-w-xs mx-auto">
+              {interests.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center text-[10px] font-semibold bg-brand-50 border border-brand-100 text-brand-700 px-2 py-0.5 rounded-md"
+                >
+                  <Hash className="w-2.5 h-2.5 mr-0.5 text-brand-400" />
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <p className="text-sm font-medium text-slate-400 mb-6 max-w-xs mx-auto">
+          {interests.length > 0 
+            ? "Looking for a match with similar interests first. If none are found, we'll connect you with a random stranger."
+            : "Finding a random stranger online. This should take just a moment."}
         </p>
 
         {/* Spinner */}

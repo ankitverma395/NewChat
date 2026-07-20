@@ -20,6 +20,15 @@ const ChatSessionSchema = new mongoose.Schema(
       enum: ['active', 'completed'],
       default: 'active',
     },
+    chatMode: {
+      type: String,
+      enum: ['video', 'text'],
+      default: 'video',
+    },
+    interests: {
+      type: [String],
+      default: [],
+    },
     startedAt: {
       type: Date,
       default: Date.now,

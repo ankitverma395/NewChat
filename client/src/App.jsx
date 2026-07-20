@@ -10,9 +10,14 @@ function AppContent() {
   const { matchState } = useChat();
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50 text-slate-800 overflow-hidden">
+    <div className={matchState === 'idle' 
+      ? "min-h-screen flex flex-col bg-slate-50 text-slate-800" 
+      : "h-screen flex flex-col bg-slate-50 text-slate-800 overflow-hidden"
+    }>
       <Navbar />
-      <main className="flex-1 flex flex-col w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-6 min-h-0">
+      <main className={`flex flex-col w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-3 sm:py-6 ${
+        matchState === 'idle' ? 'min-h-fit' : 'flex-1 min-h-0'
+      }`}>
         {matchState === 'idle' && <Home />}
         {matchState === 'waiting' && <WaitingScreen />}
         {(matchState === 'chatting' || matchState === 'disconnected') && <ChatRoom />}

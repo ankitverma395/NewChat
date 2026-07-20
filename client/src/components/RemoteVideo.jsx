@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { User, ShieldAlert, Radio } from 'lucide-react';
 
-export default function RemoteVideo({ stream, isPartnerTyping, matchState }) {
+export default function RemoteVideo({ stream, isPartnerTyping, matchState, filterClass, partnerNickname = 'Stranger', connectionStats = { ping: null, quality: 'checking' } }) {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function RemoteVideo({ stream, isPartnerTyping, matchState }) {
         <div className="w-16 h-16 rounded-full bg-red-950/40 border border-red-500/30 flex items-center justify-center mb-4 text-red-500 animate-pulse">
           <ShieldAlert className="w-8 h-8" />
         </div>
-        <h3 className="text-lg font-bold text-white mb-1">Stranger Disconnected</h3>
+        <h3 className="text-lg font-bold text-white mb-1">{partnerNickname} Disconnected</h3>
         <p className="text-xs text-slate-500 max-w-xs">
           Searching for another stranger automatically... Please wait.
         </p>
@@ -25,13 +25,14 @@ export default function RemoteVideo({ stream, isPartnerTyping, matchState }) {
   }
 
   return (
-    <div className="relative w-full h-full bg-slate-950 rounded-3xl overflow-hidden shadow-soft flex items-center justify-center border border-slate-100">
+    <div className="relative w-full h-full bg-slate-955 rounded-3xl overflow-hidden shadow-soft flex items-center justify-center border border-slate-100">
       {stream && (
         <video
+          id="remote-video"
           ref={videoRef}
           autoPlay
           playsInline
-          className={`w-full h-full object-cover ${
+          className={`w-full h-full object-cover ${filterClass || ''} ${
             stream.getVideoTracks().length > 0 ? '' : 'hidden'
           }`}
         />
@@ -49,11 +50,31 @@ export default function RemoteVideo({ stream, isPartnerTyping, matchState }) {
         </div>
       )}
 
-      {/* Stranger info overlay */}
-      <div className="absolute top-4 left-4 bg-black/45 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-semibold flex items-center gap-1.5">
-        <span className="w-2 h-2 rounded-full bg-brand-500 animate-ping" />
-        <User className="w-3.5 h-3.5 text-slate-300" />
-        <span>Stranger</span>
+      {/* Stranger info overlay and network connection status */}
+      <div className="absolute top-4 left-4 flex items-center gap-2">
+        <div className="bg-black/45 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-semibold flex items-center gap-1.5 shadow-sm border border-white/5">
+          <span className="w-2 h-2 rounded-full bg-brand-500 animate-ping" />
+          <User className="w-3.5 h-3.5 text-slate-300" />
+          <span>{partnerNickname}</span>
+        </div>
+
+        {/* Latency RTT Badge */}
+        {matchState === 'chatting' && (
+          <div className="bg-black/45 backdrop-blur-md text-white text-[10px] px-2.5 py-1.5 rounded-full font-bold flex items-center gap-1.5 shadow-sm border border-white/5">
+            <span className={`w-1.5 h-1.5 rounded-full ${
+              connectionStats.quality === 'excellent' 
+                ? 'bg-green-400' 
+                : connectionStats.quality === 'good' 
+                  ? 'bg-emerald-400' 
+                  : connectionStats.quality === 'fair' 
+                    ? 'bg-amber-400' 
+                    : 'bg-red-400 animate-pulse'
+            }`} />
+            <span>
+              {connectionStats.ping !== null ? `${connectionStats.ping} ms` : 'Checking...'}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Typing overlay indicator */}
@@ -64,7 +85,7 @@ export default function RemoteVideo({ stream, isPartnerTyping, matchState }) {
             <span className="w-1.5 h-1.5 rounded-full bg-white animate-bounce" style={{ animationDelay: '150ms' }} />
             <span className="w-1.5 h-1.5 rounded-full bg-white animate-bounce" style={{ animationDelay: '300ms' }} />
           </div>
-          <span>Stranger is typing...</span>
+          <span>{partnerNickname} is typing...</span>
         </div>
       )}
     </div>
