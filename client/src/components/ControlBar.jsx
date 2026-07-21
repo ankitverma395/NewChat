@@ -31,7 +31,7 @@ export default function ControlBar({
   onTakeSnapshot,
 }) {
   return (
-    <div className="w-full bg-[#0f1322]/60 border border-slate-850 shadow-2xl backdrop-blur-2xl rounded-3xl px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2 sm:gap-4 z-10">
+    <div className="w-full bg-slate-900/50 border border-slate-800 shadow-2xl backdrop-blur-2xl rounded-3xl px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-2 sm:gap-4 z-10">
       {/* Media Controls */}
       {chatMode === 'video' ? (
         <div className="flex items-center space-x-1.5 sm:space-x-2.5">
@@ -39,9 +39,9 @@ export default function ControlBar({
           <button
             onClick={toggleAudio}
             title={isAudioEnabled ? 'Mute Microphone' : 'Unmute Microphone'}
-            className={`p-2.5 sm:p-3.5 rounded-2xl border transition-all duration-200 active:scale-95 ${
+            className={`p-2.5 sm:p-3.5 rounded-2xl border transition-all duration-200 active:scale-95 cursor-pointer ${
               isAudioEnabled
-                ? 'bg-[#0b0f19]/80 border-slate-800 text-slate-350 hover:bg-slate-850 hover:text-white'
+                ? 'bg-slate-900/80 border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white'
                 : 'bg-red-500/10 border-red-500/25 text-red-400 hover:bg-red-500/20'
             }`}
           >
@@ -52,9 +52,9 @@ export default function ControlBar({
           <button
             onClick={toggleVideo}
             title={isVideoEnabled ? 'Turn Off Camera' : 'Turn On Camera'}
-            className={`p-2.5 sm:p-3.5 rounded-2xl border transition-all duration-200 active:scale-95 ${
+            className={`p-2.5 sm:p-3.5 rounded-2xl border transition-all duration-200 active:scale-95 cursor-pointer ${
               isVideoEnabled
-                ? 'bg-[#0b0f19]/80 border-slate-800 text-slate-350 hover:bg-slate-850 hover:text-white'
+                ? 'bg-slate-900/80 border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white'
                 : 'bg-red-500/10 border-red-500/25 text-red-400 hover:bg-red-500/20'
             }`}
           >
@@ -65,17 +65,17 @@ export default function ControlBar({
           <button
             onClick={toggleScreenShare}
             title={isScreenSharing ? 'Stop Screen Share' : 'Share Screen'}
-            className={`p-2.5 sm:p-3.5 rounded-2xl border transition-all duration-200 active:scale-95 ${
+            className={`p-2.5 sm:p-3.5 rounded-2xl border transition-all duration-200 active:scale-95 cursor-pointer ${
               isScreenSharing
                 ? 'bg-blue-500/20 border-blue-500/30 text-blue-400 hover:bg-blue-500/30 shadow-[0_0_12px_rgba(59,130,246,0.2)]'
-                : 'bg-[#0b0f19]/80 border-slate-800 text-slate-350 hover:bg-slate-850 hover:text-white'
+                : 'bg-slate-900/80 border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white'
             }`}
           >
             <Monitor className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
           </button>
         </div>
       ) : (
-        <div className="flex items-center text-slate-400 text-[10px] sm:text-xs font-semibold bg-[#070b16]/60 border border-slate-850 px-3 py-2.5 rounded-2xl">
+        <div className="flex items-center text-slate-400 text-[10px] sm:text-xs font-semibold bg-slate-950/60 border border-slate-800 px-3 py-2.5 rounded-2xl">
           🎙️ Media disabled (Text Mode)
         </div>
       )}
@@ -86,7 +86,7 @@ export default function ControlBar({
         <button
           onClick={onNext}
           title="Match with Next Stranger"
-          className="flex items-center space-x-1.5 sm:space-x-2.5 px-4 sm:px-7 py-3 sm:py-3.5 bg-gradient-to-r from-blue-600 to-indigo-650 hover:from-blue-500 hover:to-indigo-550 active:scale-[0.97] text-white font-extrabold text-xs sm:text-sm rounded-2xl transition duration-150 shadow-lg shadow-blue-500/15 hover:shadow-blue-500/25"
+          className="flex items-center space-x-1.5 sm:space-x-2.5 px-4 sm:px-7 py-3 sm:py-3.5 bg-gradient-to-r from-blue-600 to-indigo-650 hover:from-blue-500 hover:to-indigo-550 active:scale-[0.97] text-white font-extrabold text-xs sm:text-sm rounded-2xl transition duration-150 shadow-lg shadow-blue-500/15 hover:shadow-blue-500/25 cursor-pointer"
         >
           <span className="hidden sm:inline">Next Stranger</span>
           <span className="sm:hidden">Next</span>
@@ -97,7 +97,7 @@ export default function ControlBar({
         <button
           onClick={onLeave}
           title="Leave Chat Room"
-          className="flex items-center space-x-1 sm:space-x-1.5 px-3.5 sm:px-5 py-3 sm:py-3.5 bg-[#0b0f19]/80 hover:bg-red-500/10 hover:text-red-400 text-slate-400 hover:border-red-500/25 border border-slate-800 font-bold text-xs sm:text-sm rounded-2xl transition duration-150 active:scale-[0.97]"
+          className="flex items-center space-x-1 sm:space-x-1.5 px-3.5 sm:px-5 py-3 sm:py-3.5 bg-slate-900/80 hover:bg-red-500/10 hover:text-red-400 text-slate-400 hover:border-red-500/25 border border-slate-800 font-bold text-xs sm:text-sm rounded-2xl transition duration-150 active:scale-[0.97] cursor-pointer"
         >
           <LogOut className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
           <span className="hidden sm:inline">Leave</span>
@@ -111,7 +111,7 @@ export default function ControlBar({
           <button
             onClick={onTakeSnapshot}
             title="Take Video Snapshot"
-            className="p-2.5 sm:p-3.5 rounded-2xl border border-slate-800 bg-[#0b0f19]/80 text-slate-350 hover:bg-slate-850 hover:text-blue-400 active:scale-95 transition"
+            className="p-2.5 sm:p-3.5 rounded-2xl border border-slate-800 bg-slate-900/80 text-slate-300 hover:bg-slate-800 hover:text-blue-400 active:scale-95 transition cursor-pointer"
           >
             <Camera className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
           </button>
@@ -121,7 +121,7 @@ export default function ControlBar({
         <button
           onClick={toggleFullscreen}
           title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
-          className="p-2.5 sm:p-3.5 rounded-2xl border border-slate-850 bg-[#0b0f19]/80 text-slate-350 hover:bg-slate-850 hover:text-white active:scale-95 transition"
+          className="p-2.5 sm:p-3.5 rounded-2xl border border-slate-800 bg-slate-900/80 text-slate-300 hover:bg-slate-800 hover:text-white active:scale-95 transition cursor-pointer"
         >
           {isFullscreen ? <Minimize2 className="w-4.5 h-4.5 sm:w-5 sm:h-5" /> : <Maximize2 className="w-4.5 h-4.5 sm:w-5 sm:h-5" />}
         </button>
@@ -130,10 +130,10 @@ export default function ControlBar({
         <button
           onClick={toggleChat}
           title={isChatOpen ? 'Hide Chat Panel' : 'Show Chat Panel'}
-          className={`p-2.5 sm:p-3.5 rounded-2xl border transition-all duration-200 active:scale-95 ${
+          className={`p-2.5 sm:p-3.5 rounded-2xl border transition-all duration-200 active:scale-95 cursor-pointer ${
             isChatOpen
-              ? 'bg-[#0b0f19]/80 border-slate-800 text-slate-350 hover:bg-slate-850 hover:text-white'
-              : 'bg-[#070b16]/60 border-slate-850 text-slate-500 hover:bg-[#0b0f19] hover:text-slate-350'
+              ? 'bg-slate-900/80 border-slate-800 text-slate-300 hover:bg-slate-800 hover:text-white'
+              : 'bg-slate-950/60 border-slate-800 text-slate-500 hover:bg-slate-900 hover:text-slate-300'
           }`}
         >
           {isChatOpen ? <MessageSquare className="w-4.5 h-4.5 sm:w-5 sm:h-5" /> : <MessageSquareOff className="w-4.5 h-4.5 sm:w-5 sm:h-5" />}

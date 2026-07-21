@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Video, Activity } from 'lucide-react';
+import { Video, Activity, Sparkles } from 'lucide-react';
 import { getServerStats } from '../services/api';
 import { useChat } from '../context/ChatContext';
+import FeedbackModal from './FeedbackModal';
 
 export default function Navbar() {
   const [activeUsers, setActiveUsers] = useState(0);
   const { matchState } = useChat();
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
   useEffect(() => {
     // Initial fetch
@@ -41,7 +43,7 @@ export default function Navbar() {
         </div>
 
         {/* Real-time Status */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-3 sm:space-x-4">
           <div className="flex items-center space-x-2 text-xs sm:text-sm font-semibold text-slate-300 bg-slate-900/80 border border-slate-800/60 px-3.5 py-1.5 rounded-full shadow-inner-soft">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -53,6 +55,18 @@ export default function Navbar() {
             </span>
           </div>
 
+          {/* Request Change feedback trigger button */}
+          <button
+            type="button"
+            onClick={() => setShowFeedbackModal(true)}
+            className="flex items-center gap-1 text-[11px] font-black px-3.5 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-indigo-400 hover:bg-indigo-500/20 transition duration-150 active:scale-95 shadow-md shadow-indigo-500/5 cursor-pointer shrink-0"
+            title="Request Website Changes / Features"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-indigo-400 animate-pulse" />
+            <span className="hidden sm:inline">Request Change</span>
+            <span className="sm:hidden">Request</span>
+          </button>
+
           {matchState === 'chatting' && (
             <span className="text-[10px] font-bold uppercase tracking-wider text-green-400 bg-green-500/10 border border-green-500/20 px-3 py-1.5 rounded-full animate-pulse">
               Connected
@@ -60,6 +74,9 @@ export default function Navbar() {
           )}
         </div>
       </div>
+
+      {/* Suggestion & Instagram Integration Modal */}
+      <FeedbackModal isOpen={showFeedbackModal} onClose={() => setShowFeedbackModal(false)} />
     </nav>
   );
 }

@@ -195,7 +195,7 @@ export default function ChatRoom() {
       )}
 
       {/* Main split chat zone */}
-      <div className="flex-1 flex flex-col md:grid md:grid-cols-12 gap-4 md:gap-5 min-h-0 mb-3 md:mb-4">
+      <div className="flex-1 flex flex-col md:grid md:grid-cols-10 gap-4 md:gap-5 min-h-0 mb-3 md:mb-4">
         
         {/* Video Player component */}
         <VideoPlayer
@@ -216,7 +216,7 @@ export default function ChatRoom() {
 
         {/* Text chat panel column */}
         {isChatOpen && (
-          <div className="flex-1 md:col-span-4 h-full min-h-0 flex flex-col mt-2.5 md:mt-0">
+          <div className="flex-1 md:col-span-7 h-full min-h-0 flex flex-col mt-2.5 md:mt-0">
             <ChatBox
               messages={messages}
               onSendMessage={sendMessage}

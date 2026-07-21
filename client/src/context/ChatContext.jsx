@@ -409,7 +409,6 @@ export const ChatProvider = ({ children }) => {
         },
       ]);
       setStrangerIsTyping(false);
-      playSound('message');
 
       // Speak message if TTS reader is enabled
       if (ttsEnabledRef.current && typeof window !== 'undefined' && window.speechSynthesis) {

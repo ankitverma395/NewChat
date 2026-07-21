@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Flame, Heart } from 'lucide-react';
+import { ShieldCheck, Flame, Heart, Instagram } from 'lucide-react';
 
 export default function Footer({ onOpenTerms }) {
   return (
@@ -28,6 +28,17 @@ export default function Footer({ onOpenTerms }) {
           >
             Terms of Service
           </button>
+          <span className="text-slate-700 hidden sm:inline">•</span>
+          <a
+            href="https://www.instagram.com/strangerchatofficial?igsh=YmlzM3B4ZTF6cjR2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-pink-400 text-slate-450 transition-colors inline-flex items-center gap-1"
+            title="Follow us on Instagram"
+          >
+            <Instagram className="w-3.5 h-3.5 text-pink-500" />
+            <span>Instagram</span>
+          </a>
           <span className="text-slate-700 hidden sm:inline">•</span>
           <span className="flex items-center gap-1">
             <span>Made with</span>

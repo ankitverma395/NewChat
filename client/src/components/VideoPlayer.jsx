@@ -40,8 +40,8 @@ export default function VideoPlayer({
         ref={videoContainerRef}
         className={`relative bg-[#0d1424]/40 border border-slate-800/80 text-white rounded-3xl overflow-hidden flex flex-col p-6 sm:p-8 shadow-2xl transition-all duration-300 ${
           isChatOpen
-            ? 'h-[30vh] sm:h-[40vh] md:h-full md:col-span-8'
-            : 'flex-1 md:h-full md:col-span-12'
+            ? 'h-[30vh] sm:h-[40vh] md:h-full md:col-span-3'
+            : 'flex-1 md:h-full md:col-span-10'
         }`}
       >
         <div className="flex-1 flex flex-col items-center justify-center text-center max-w-lg mx-auto">
@@ -124,8 +124,8 @@ export default function VideoPlayer({
       ref={videoContainerRef}
       className={`relative bg-[#0b0f19] border border-slate-800/80 rounded-3xl overflow-hidden flex flex-col shadow-2xl transition-all duration-300 ${
         isChatOpen
-          ? 'h-[32vh] sm:h-[42vh] md:h-full md:col-span-8'
-          : 'flex-1 md:h-full md:col-span-12'
+          ? 'h-[32vh] sm:h-[42vh] md:h-full md:col-span-3'
+          : 'flex-1 md:h-full md:col-span-10'
       }`}
     >
       {/* Visual Filters Selector */}

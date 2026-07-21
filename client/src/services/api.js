@@ -34,4 +34,48 @@ export const createAnonymousId = async () => {
   }
 };
 
+export const submitFeedback = async (suggestion) => {
+  try {
+    const response = await api.post('/feedback', { suggestion });
+    return response.data;
+  } catch (error) {
+    console.error('Error submitting feedback:', error);
+    return { success: false, message: error.response?.data?.message || 'Failed to submit feedback' };
+  }
+};
+
+export const loginAdmin = async (password) => {
+  try {
+    const response = await api.post('/admin/login', { password });
+    return response.data;
+  } catch (error) {
+    console.error('Error logging in admin:', error);
+    return { success: false, message: error.response?.data?.message || 'Failed to login' };
+  }
+};
+
+export const getAdminFeedback = async (password) => {
+  try {
+    const response = await api.get('/admin/feedback', {
+      headers: { 'x-admin-password': password }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching admin feedback:', error);
+    return { success: false, message: error.response?.data?.message || 'Failed to load feedback list' };
+  }
+};
+
+export const deleteAdminFeedback = async (id, password) => {
+  try {
+    const response = await api.delete(`/admin/feedback/${id}`, {
+      headers: { 'x-admin-password': password }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting feedback:', error);
+    return { success: false, message: error.response?.data?.message || 'Failed to delete suggestion' };
+  }
+};
+
 export default api;

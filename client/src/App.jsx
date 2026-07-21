@@ -6,10 +6,21 @@ import Home from './pages/Home';
 import WaitingScreen from './pages/WaitingScreen';
 import ChatRoom from './pages/ChatRoom';
 import TermsModal from './components/TermsModal';
+import AdminPanel from './pages/AdminPanel';
+import FeedbackModal from './components/FeedbackModal';
+import { ShieldAlert } from 'lucide-react';
 
 function AppContent() {
   const { matchState } = useChat();
   const [showTerms, setShowTerms] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [isAdminMode, setIsAdminMode] = useState(
+    window.location.pathname === '/admin' || window.location.search.includes('admin')
+  );
+
+  if (isAdminMode) {
+    return <AdminPanel onClose={() => setIsAdminMode(false)} />;
+  }
 
   return (
     <div className={matchState === 'idle' 
@@ -35,6 +46,19 @@ function AppContent() {
       
       {/* Terms and Conditions Modal */}
       <TermsModal isOpen={showTerms} onClose={() => setShowTerms(false)} />
+
+      {/* Floating Action Button for Suggestions & Feedback */}
+      <button
+        onClick={() => setShowFeedback(true)}
+        className="fixed bottom-24 right-4 sm:bottom-6 sm:right-6 z-40 flex items-center gap-2 px-3.5 py-3 bg-gradient-to-r from-blue-600 to-indigo-650 hover:from-blue-500 hover:to-indigo-550 border border-slate-700/50 hover:border-indigo-500/50 text-white font-extrabold text-xs sm:text-sm rounded-full shadow-2xl shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all duration-300 group cursor-pointer"
+        title="Report issue or suggest a change"
+      >
+        <ShieldAlert className="w-4 h-4 text-indigo-200 group-hover:text-white animate-pulse" />
+        <span>Request Tweak</span>
+      </button>
+
+      {/* Feedback/Suggestion Modal */}
+      <FeedbackModal isOpen={showFeedback} onClose={() => setShowFeedback(false)} />
     </div>
   );
 }

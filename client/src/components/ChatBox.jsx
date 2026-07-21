@@ -210,21 +210,25 @@ export default function ChatBox({ messages, onSendMessage, onSendTypingStatus, s
   };
 
   return (
-    <div className="flex flex-col h-full bg-[#0d1424]/40 border border-slate-800/80 text-white rounded-3xl overflow-hidden shadow-2xl backdrop-blur-2xl">
+    <div className="flex flex-col h-full bg-slate-900/50 border border-slate-800 text-white rounded-3xl overflow-hidden shadow-2xl backdrop-blur-2xl">
       {/* Chat header */}
-      <div className="px-5 py-4 border-b border-slate-800/60 flex items-center justify-between bg-slate-950/20 select-none">
-        <h3 className="text-xs font-black text-white leading-tight uppercase tracking-wider font-sans">
-          Room<br/>Chat
-        </h3>
-        <div className="flex items-center space-x-2">
+      <div className="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60 select-none">
+        <div className="flex flex-col text-left">
+          <span className="text-[11px] font-black tracking-widest text-slate-200 uppercase font-sans">Live Chatroom</span>
+          <span className="text-[9px] text-indigo-400 font-bold uppercase tracking-wider flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+            Peer-to-Peer Secure
+          </span>
+        </div>
+        <div className="flex items-center gap-1.5 bg-slate-950/85 p-1 rounded-2xl border border-slate-800">
           {/* Real-time Translator Dropdown */}
           {activeTab === 'chat' && (
-            <div className="relative flex items-center bg-[#0b0f19]/80 border border-slate-800/85 rounded-xl px-2.5 py-1.5 text-[11px] font-bold text-slate-300 hover:bg-slate-850 hover:text-white transition cursor-pointer">
+            <div className="relative flex items-center bg-slate-900/60 hover:bg-slate-900 border border-slate-800 rounded-xl px-2 py-1.5 text-[10px] font-bold text-slate-300 transition cursor-pointer">
               <Globe className="w-3.5 h-3.5 text-blue-400 mr-1.5 shrink-0" />
               <select
                 value={translationLang}
                 onChange={(e) => setTranslationLang(e.target.value)}
-                className="bg-transparent outline-none cursor-pointer appearance-none pr-4 text-white font-extrabold text-[10px]"
+                className="bg-transparent outline-none cursor-pointer appearance-none pr-3.5 text-white font-extrabold text-[10px]"
               >
                 <option value="none" className="bg-slate-950 text-white">Off</option>
                 <option value="en" className="bg-slate-950 text-white">EN</option>
@@ -235,7 +239,7 @@ export default function ChatBox({ messages, onSendMessage, onSendTypingStatus, s
                 <option value="hi" className="bg-slate-950 text-white">HI</option>
                 <option value="zh" className="bg-slate-950 text-white">ZH</option>
               </select>
-              <ChevronDown className="w-3 h-3 text-slate-450 absolute right-1.5 pointer-events-none" />
+              <ChevronDown className="w-3 h-3 text-slate-400 absolute right-1 pointer-events-none" />
             </div>
           )}
 
@@ -245,30 +249,13 @@ export default function ChatBox({ messages, onSendMessage, onSendTypingStatus, s
               type="button"
               onClick={() => setSoundsEnabled(!soundsEnabled)}
               title={soundsEnabled ? "Mute Sound Effects" : "Unmute Sound Effects"}
-              className={`p-2 rounded-xl border transition ${
+              className={`p-1.5 rounded-xl border transition-all duration-150 cursor-pointer ${
                 soundsEnabled 
-                  ? 'bg-[#0b0f19]/80 border-slate-800 text-slate-350 hover:text-white hover:bg-slate-850' 
+                  ? 'bg-indigo-500/10 border-indigo-500/25 text-indigo-400 hover:bg-indigo-500/20' 
                   : 'bg-red-500/10 border-red-500/25 text-red-400 hover:bg-red-500/20'
               }`}
             >
               {soundsEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
-            </button>
-          )}
-
-          {/* Data & RAM Saver Mode Toggle Button */}
-          {activeTab === 'chat' && (
-            <button
-              type="button"
-              onClick={() => setDataSaverMode(!dataSaverMode)}
-              title={dataSaverMode ? "Disable Data & RAM Saver Mode" : "Enable Data & RAM Saver"}
-              className={`text-[10px] font-bold px-2.5 py-1.5 rounded-xl border transition flex items-center gap-1 ${
-                dataSaverMode 
-                  ? 'bg-amber-500/20 text-amber-400 border-amber-500/35 shadow-sm' 
-                  : 'bg-[#0b0f19]/80 border-slate-800 text-slate-450 hover:text-slate-350 hover:bg-slate-850'
-              }`}
-            >
-              <Zap className="w-3 h-3 text-amber-400 fill-amber-400 shrink-0" />
-              <span className="hidden sm:inline">Saver</span>
             </button>
           )}
 
@@ -278,14 +265,13 @@ export default function ChatBox({ messages, onSendMessage, onSendTypingStatus, s
               type="button"
               onClick={() => setTtsEnabled(!ttsEnabled)}
               title={ttsEnabled ? "Disable Text-to-Speech (TTS)" : "Enable Text-to-Speech (TTS)"}
-              className={`text-[10px] font-bold px-2.5 py-1.5 rounded-xl border transition flex items-center gap-1 ${
+              className={`text-[10px] font-bold p-1.5 rounded-xl border transition-all duration-150 cursor-pointer ${
                 ttsEnabled 
-                  ? 'bg-blue-500/20 text-blue-400 border-blue-500/35 shadow-sm' 
-                  : 'bg-[#0b0f19]/80 border-slate-800 text-slate-450 hover:text-slate-350 hover:bg-slate-850'
+                  ? 'bg-blue-500/10 border-blue-500/25 text-blue-400 hover:bg-blue-500/20' 
+                  : 'bg-slate-950/30 border-slate-800 text-slate-400 hover:text-slate-300 hover:bg-slate-800'
               }`}
             >
-              <MessageSquare className="w-3 h-3 text-blue-400 shrink-0" />
-              <span className="hidden sm:inline">TTS</span>
+              <MessageSquare className="w-3.5 h-3.5 text-blue-400" />
             </button>
           )}
 
@@ -294,26 +280,23 @@ export default function ChatBox({ messages, onSendMessage, onSendTypingStatus, s
               type="button"
               onClick={handleExportChat}
               title="Save Chat Log"
-              className="p-2 border border-slate-800 bg-[#0b0f19]/80 hover:bg-slate-850 text-slate-450 hover:text-white rounded-xl transition"
+              className="p-1.5 border border-slate-800 bg-slate-950/30 hover:bg-slate-800 text-slate-400 hover:text-white rounded-xl transition cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
             </button>
           )}
-          <span className="text-[9px] font-black text-slate-550 uppercase tracking-widest pl-1 shrink-0">
-            E2E P2P
-          </span>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex bg-[#070b16]/60 p-1.5 rounded-2xl mx-4 my-2.5 space-x-1 shrink-0 border border-slate-850/85">
+      <div className="flex bg-slate-950/65 p-1.5 rounded-2xl mx-5 my-3.5 space-x-1 shrink-0 border border-slate-800">
         <button
           type="button"
           onClick={() => setActiveTab('chat')}
-          className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 ${
+          className={`flex-1 py-2 px-3 text-xs font-black rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer uppercase tracking-wider ${
             activeTab === 'chat'
-              ? 'bg-[#1a233d]/85 text-white border border-[#3b82f6]/20 shadow-md'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+              ? 'bg-gradient-to-r from-blue-600/15 to-indigo-600/15 border border-blue-500/25 text-blue-400 shadow-md'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/35'
           }`}
         >
           <MessageSquare className="w-3.5 h-3.5 text-blue-400 shrink-0" />
@@ -322,26 +305,26 @@ export default function ChatBox({ messages, onSendMessage, onSendTypingStatus, s
         <button
           type="button"
           onClick={() => setActiveTab('game')}
-          className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 relative ${
+          className={`flex-1 py-2 px-3 text-xs font-black rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 relative cursor-pointer uppercase tracking-wider ${
             activeTab === 'game'
-              ? 'bg-[#1a233d]/85 text-white border border-[#3b82f6]/20 shadow-md'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+              ? 'bg-gradient-to-r from-purple-600/15 to-indigo-600/15 border border-purple-500/25 text-purple-400 shadow-md'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/35'
           }`}
         >
           <Gamepad2 className="w-3.5 h-3.5 text-purple-400 shrink-0" />
           <span>Game</span>
           {/* Notification badge */}
           {['receiving_invite', 'playing'].includes(gameStatus) && activeTab !== 'game' && (
-            <span className="absolute top-1.5 right-2 w-1.5 h-1.5 rounded-full bg-brand-500 animate-ping" />
+            <span className="absolute top-1.5 right-2 w-1.5 h-1.5 rounded-full bg-blue-500 animate-ping" />
           )}
         </button>
         <button
           type="button"
           onClick={() => setActiveTab('doodle')}
-          className={`flex-1 py-2 px-3 text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 ${
+          className={`flex-1 py-2 px-3 text-xs font-black rounded-xl transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer uppercase tracking-wider ${
             activeTab === 'doodle'
-              ? 'bg-[#1a233d]/85 text-white border border-[#3b82f6]/20 shadow-md'
-              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/40'
+              ? 'bg-gradient-to-r from-emerald-600/15 to-teal-600/15 border border-emerald-500/25 text-emerald-400 shadow-md'
+              : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/35'
           }`}
         >
           <Palette className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
@@ -376,10 +359,10 @@ export default function ChatBox({ messages, onSendMessage, onSendTypingStatus, s
 
             {/* Stranger Typing Status */}
             {strangerIsTyping && (
-              <div className="flex items-center space-x-2 text-xs font-semibold text-slate-450 animate-pulse mt-2 mb-1 shrink-0">
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-450 animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-450 animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-1.5 h-1.5 rounded-full bg-slate-450 animate-bounce" style={{ animationDelay: '300ms' }} />
+              <div className="flex items-center space-x-2 text-xs font-semibold text-slate-400 animate-pulse mt-2 mb-1 shrink-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" style={{ animationDelay: '300ms' }} />
                 <span>{partnerNickname} is typing...</span>
               </div>
             )}
@@ -388,15 +371,15 @@ export default function ChatBox({ messages, onSendMessage, onSendTypingStatus, s
           </div>
 
           {/* Emoji Helper & Theme selector tray */}
-          <div className="px-4 py-2 border-t border-slate-800/60 flex items-center justify-between bg-slate-950/20 select-none">
+          <div className="px-5 py-2.5 border-t border-slate-800 flex items-center justify-between bg-slate-900/40 backdrop-blur-md select-none">
             {/* Emojis list */}
-            <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
               {QUICK_EMOJIS.map((emoji) => (
                 <button
                   type="button"
                   key={emoji}
                   onClick={() => triggerReaction(emoji)}
-                  className="hover:scale-125 transition-transform duration-100 text-lg py-0.5 px-1.5 rounded hover:bg-slate-800"
+                  className="hover:scale-125 hover:rotate-6 transition-all duration-100 text-lg py-0.5 px-1.5 rounded hover:bg-slate-800/40 cursor-pointer"
                   title={`Send floating ${emoji}`}
                 >
                   {emoji}
@@ -412,10 +395,10 @@ export default function ChatBox({ messages, onSendMessage, onSendTypingStatus, s
                     type="button"
                     key={td.name}
                     onClick={() => changeTheme(td.name)}
-                    className={`w-3.5 h-3.5 rounded-full transition-all duration-100 ${td.color} ${
+                    className={`w-3.5 h-3.5 rounded-full transition-all duration-150 hover:scale-110 active:scale-95 cursor-pointer ${td.color} ${
                       myTheme === td.name 
-                        ? 'ring-2 ring-offset-2 ring-offset-[#0d1424] ring-blue-500 scale-110 shadow-sm' 
-                        : 'opacity-70'
+                        ? 'ring-2 ring-offset-2 ring-offset-slate-900 ring-indigo-500 scale-110 shadow-lg' 
+                        : 'opacity-60 hover:opacity-100'
                     }`}
                     title={`Theme: ${td.name}`}
                   />
@@ -425,67 +408,69 @@ export default function ChatBox({ messages, onSendMessage, onSendTypingStatus, s
           </div>
 
           {/* Input container */}
-          <form onSubmit={handleSendSubmit} className="p-4 border-t border-slate-800/60 flex items-center gap-2.5 relative bg-slate-950/20">
-            {/* Emoji Button */}
-            <div className="relative">
+          <form onSubmit={handleSendSubmit} className="p-4 border-t border-slate-800 relative bg-slate-900/60 backdrop-blur-md">
+            <div className="flex items-center bg-slate-950/80 border border-slate-800 hover:border-slate-700 focus-within:border-blue-500/80 rounded-2xl w-full px-2 py-1.5 transition-all duration-300 shadow-lg">
+              {/* Emoji Button */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowEmojiGrid(!showEmojiGrid)}
+                  className="p-2 rounded-xl hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 transition shrink-0 cursor-pointer"
+                >
+                  <Smile className="w-5 h-5 text-slate-400 hover:text-slate-200" />
+                </button>
+
+                {/* Expanded Emoji Grid popup */}
+                {showEmojiGrid && (
+                  <div className="absolute bottom-14 left-0 bg-slate-900 border border-slate-800 shadow-2xl p-3 rounded-2xl grid grid-cols-4 gap-2 z-50 w-44 animate-in fade-in slide-in-from-bottom-2 duration-150">
+                    {['😄', '❤️', '😂', '👍', '🔥', '😭', '😮', '🎉', '💡', '😎', '💀', '🙏'].map((emoji) => (
+                      <button
+                        key={emoji}
+                        type="button"
+                        onClick={() => handleAddEmoji(emoji)}
+                        className="hover:bg-slate-800 text-xl p-1 rounded transition text-center cursor-pointer"
+                      >
+                        {emoji}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Icebreaker button */}
               <button
                 type="button"
-                onClick={() => setShowEmojiGrid(!showEmojiGrid)}
-                className="p-2.5 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition shrink-0"
+                onClick={handleGetIcebreaker}
+                title="Get Conversation Starter"
+                className="p-2 rounded-xl hover:bg-slate-800/50 text-slate-400 hover:text-slate-200 transition shrink-0 cursor-pointer"
               >
-                <Smile className="w-5 h-5 text-slate-400 hover:text-slate-200" />
+                <Sparkles className="w-5 h-5 text-slate-400 hover:text-slate-200" />
               </button>
 
-              {/* Expanded Emoji Grid popup */}
-              {showEmojiGrid && (
-                <div className="absolute bottom-12 left-0 bg-[#0f172a] border border-slate-800 shadow-2xl p-3 rounded-2xl grid grid-cols-4 gap-2 z-50 w-44 animate-in fade-in slide-in-from-bottom-2 duration-150">
-                  {['😄', '❤️', '😂', '👍', '🔥', '😭', '😮', '🎉', '💡', '😎', '💀', '🙏'].map((emoji) => (
-                    <button
-                      key={emoji}
-                      type="button"
-                      onClick={() => handleAddEmoji(emoji)}
-                      className="hover:bg-slate-800 text-xl p-1 rounded transition text-center"
-                    >
-                      {emoji}
-                    </button>
-                  ))}
-                </div>
-              )}
+              {/* Text Input */}
+              <input
+                type="text"
+                value={inputText}
+                onChange={handleInputChange}
+                placeholder="Type message here..."
+                className="flex-1 bg-transparent border-0 outline-none focus:ring-0 px-2 text-sm text-white placeholder-slate-500 font-semibold"
+              />
+
+              {/* Send Button */}
+              <button
+                type="submit"
+                disabled={!inputText.trim()}
+                className="p-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 disabled:bg-slate-900 border border-transparent disabled:border-slate-800 text-white disabled:text-slate-600 rounded-xl transition duration-150 flex items-center justify-center shrink-0 shadow-md shadow-blue-500/10 active:scale-95 cursor-pointer"
+              >
+                <Send className="w-4 h-4" />
+              </button>
             </div>
-
-            {/* Icebreaker button */}
-            <button
-              type="button"
-              onClick={handleGetIcebreaker}
-              title="Get Conversation Starter"
-              className="p-2.5 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition shrink-0"
-            >
-              <Sparkles className="w-5 h-5 text-slate-400 hover:text-slate-200" />
-            </button>
-
-            {/* Text Input */}
-            <input
-              type="text"
-              value={inputText}
-              onChange={handleInputChange}
-              placeholder="Type message here..."
-              className="flex-1 bg-[#0b0f19]/70 border border-slate-800/80 text-white placeholder-slate-550 rounded-2xl px-4.5 py-3 text-sm font-medium focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition"
-            />
-
-            {/* Send Button */}
-            <button
-              type="submit"
-              disabled={!inputText.trim()}
-              className="p-3 bg-[#121829] hover:bg-[#1a233b] disabled:bg-[#0b0f19] border border-slate-800 hover:border-slate-700 text-blue-500 disabled:text-slate-650 rounded-2xl transition duration-150 flex items-center justify-center shrink-0"
-            >
-              <Send className="w-4 h-4" />
-            </button>
           </form>
         </>
       ) : activeTab === 'game' ? (
         <div className="flex-1 flex flex-col min-h-[300px] bg-slate-950/10">
           {/* Sub-tab navigation */}
-          <div className="flex border-b border-slate-800/60 bg-slate-950/20 px-4 py-2 space-x-1.5 shrink-0 select-none">
+          <div className="flex border-b border-slate-800 bg-slate-950/20 px-4 py-2 space-x-1.5 shrink-0 select-none">
             {['tictactoe', 'wyr', 'soundboard'].map((tab) => (
               <button
                 type="button"
