@@ -6,8 +6,16 @@ import FeedbackModal from './FeedbackModal';
 
 export default function Navbar() {
   const [activeUsers, setActiveUsers] = useState(0);
-  const { matchState } = useChat();
+  const { matchState, leaveChat } = useChat();
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
+
+  const handleLogoClick = () => {
+    if (matchState !== 'idle') {
+      if (window.confirm('Are you sure you want to leave the chat and return to the home page?')) {
+        leaveChat();
+      }
+    }
+  };
 
   useEffect(() => {
     // Initial fetch
@@ -28,7 +36,10 @@ export default function Navbar() {
     <nav className="w-full bg-[#0c111e]/60 backdrop-blur-lg border-b border-slate-800/60 py-4 px-6 sm:px-8 z-50">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo and Name */}
-        <div className="flex items-center space-x-3 group cursor-pointer">
+        <div 
+          onClick={handleLogoClick}
+          className="flex items-center space-x-3 group cursor-pointer"
+        >
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/20 transition-transform duration-300 group-hover:scale-105">
             <Video className="w-5 h-5" />
           </div>

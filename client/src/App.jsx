@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChatProvider, useChat } from './context/ChatContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -17,20 +17,34 @@ function AppContent() {
   const [isAdminMode, setIsAdminMode] = useState(
     window.location.pathname === '/admin' || window.location.search.includes('admin')
   );
+  const containerRef = useRef(null);
+
+  // Scroll to top whenever matchState changes to keep the Navbar visible
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0;
+    }
+  }, [matchState]);
 
   if (isAdminMode) {
     return <AdminPanel onClose={() => setIsAdminMode(false)} />;
   }
 
   return (
-    <div className={matchState === 'idle' 
-      ? "h-screen flex flex-col bg-[#090d16] text-slate-100 relative overflow-y-auto" 
-      : "h-screen flex flex-col bg-[#090d16] text-slate-100 overflow-hidden relative"
-    }>
-      {/* Decorative Gradient Glows for UI Premium Vibe */}
-      <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[50%] rounded-full bg-brand-500/10 blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[50%] rounded-full bg-fuchsia-500/10 blur-[130px] pointer-events-none" />
-      <div className="absolute top-[30%] right-[20%] w-[30%] h-[30%] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none" />
+    <div 
+      ref={containerRef}
+      className={matchState === 'idle' 
+        ? "h-screen flex flex-col bg-[#090d16] text-slate-100 relative overflow-y-auto" 
+        : "h-screen flex flex-col bg-[#090d16] text-slate-100 overflow-hidden relative"
+      }
+    >
+      {/* Decorative Gradient Glows for UI Premium Vibe, wrapped to prevent expanding scrollHeight */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[50%] rounded-full bg-brand-500/10 blur-[130px]" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[50%] rounded-full bg-fuchsia-500/10 blur-[130px]" />
+        <div className="absolute top-[30%] right-[20%] w-[30%] h-[30%] rounded-full bg-indigo-500/5 blur-[120px]" />
+      </div>
       
       <Navbar />
       <main className={`flex flex-col w-full max-w-7xl mx-auto z-10 ${
